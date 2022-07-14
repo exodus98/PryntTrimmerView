@@ -107,7 +107,7 @@ public protocol TrimmerViewDelegate: AnyObject {
 
     private func setupTrimmerView() {
         trimView.layer.borderWidth = 2.0
-        trimView.layer.cornerRadius = 2.0
+        trimView.layer.cornerRadius = 10.0
         trimView.translatesAutoresizingMaskIntoConstraints = false
         trimView.isUserInteractionEnabled = false
         addSubview(trimView)
@@ -162,26 +162,56 @@ public protocol TrimmerViewDelegate: AnyObject {
     private func setupMaskView() {
 
         leftMaskView.isUserInteractionEnabled = false
-        leftMaskView.backgroundColor = .white
-        leftMaskView.alpha = 0.7
+        leftMaskView.backgroundColor = UIColor.black
+        leftMaskView.alpha = 0.3
+//        leftMaskView.layer.cornerRadius = 10.0
         leftMaskView.translatesAutoresizingMaskIntoConstraints = false
         insertSubview(leftMaskView, belowSubview: leftHandleView)
 
         leftMaskView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         leftMaskView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         leftMaskView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        leftMaskView.rightAnchor.constraint(equalTo: leftHandleView.centerXAnchor).isActive = true
+        leftMaskView.rightAnchor.constraint(equalTo: leftHandleView.rightAnchor).isActive = true
 
         rightMaskView.isUserInteractionEnabled = false
-        rightMaskView.backgroundColor = .white
-        rightMaskView.alpha = 0.7
+        rightMaskView.backgroundColor = UIColor.black
+        rightMaskView.alpha = 0.3
+//        rightMaskView.layer.cornerRadius = 10.0
         rightMaskView.translatesAutoresizingMaskIntoConstraints = false
         insertSubview(rightMaskView, belowSubview: rightHandleView)
 
         rightMaskView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         rightMaskView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         rightMaskView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        rightMaskView.leftAnchor.constraint(equalTo: rightHandleView.centerXAnchor).isActive = true
+        rightMaskView.leftAnchor.constraint(equalTo: rightHandleView.leftAnchor).isActive = true
+        
+        updateLeftMask()
+        updateRightMask()
+    }
+    
+    private func updateLeftMask() {
+        let rect = leftMaskView.bounds
+        let path = UIBezierPath(roundedRect:rect,
+                                byRoundingCorners:[.topLeft, .bottomLeft],
+                                cornerRadii: CGSize(width: 10, height:  10))
+
+        let maskLayer = CAShapeLayer()
+
+        maskLayer.path = path.cgPath
+        leftMaskView.layer.mask = maskLayer
+    }
+    
+    private func updateRightMask() {
+        layoutIfNeeded() // 이거 해줘야 잘 그려짐
+        let rect = rightMaskView.bounds
+        let path = UIBezierPath(roundedRect:rect,
+                                byRoundingCorners:[.topRight, .bottomRight],
+                                cornerRadii: CGSize(width: 10, height:  10))
+
+        let maskLayer = CAShapeLayer()
+
+        maskLayer.path = path.cgPath
+        rightMaskView.layer.mask = maskLayer
     }
 
     private func setupPositionBar() {
@@ -219,8 +249,8 @@ public protocol TrimmerViewDelegate: AnyObject {
 
     private func updateMainColor() {
         trimView.layer.borderColor = mainColor.cgColor
-        leftHandleView.backgroundColor = mainColor
-        rightHandleView.backgroundColor = mainColor
+        leftHandleView.backgroundColor = .clear
+        rightHandleView.backgroundColor = .clear
     }
 
     private func updateHandleColor() {
@@ -267,12 +297,16 @@ public protocol TrimmerViewDelegate: AnyObject {
         let maxConstraint = max(rightHandleView.frame.origin.x - handleWidth - minimumDistanceBetweenHandle, 0)
         let newConstraint = min(max(0, currentLeftConstraint + translation.x), maxConstraint)
         leftConstraint?.constant = newConstraint
+        
+        updateLeftMask()
     }
 
     private func updateRightConstraint(with translation: CGPoint) {
         let maxConstraint = min(2 * handleWidth - frame.width + leftHandleView.frame.origin.x + minimumDistanceBetweenHandle, 0)
         let newConstraint = max(min(0, currentRightConstraint + translation.x), maxConstraint)
         rightConstraint?.constant = newConstraint
+        
+        updateRightMask()
     }
 
     // MARK: - Asset loading
