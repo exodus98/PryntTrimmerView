@@ -64,8 +64,8 @@ public protocol TrimmerViewDelegate: AnyObject {
     private let leftHandleView = HandlerView()
     private let rightHandleView = HandlerView()
     private let positionBar = UIView()
-    private let leftHandleKnob = UIView()
-    private let rightHandleKnob = UIView()
+    private let leftHandleKnob = UIImageView()
+    private let rightHandleKnob = UIImageView()
     private let leftMaskView = UIView()
     private let rightMaskView = UIView()
 
@@ -77,7 +77,7 @@ public protocol TrimmerViewDelegate: AnyObject {
     private var rightConstraint: NSLayoutConstraint?
     private var positionConstraint: NSLayoutConstraint?
 
-    private let handleWidth: CGFloat = 15
+    private let handleWidth: CGFloat = 16
 
     /// The minimum duration allowed for the trimming. The handles won't pan further if the minimum duration is attained.
     public var minDuration: Double = 3
@@ -86,8 +86,7 @@ public protocol TrimmerViewDelegate: AnyObject {
 
     override func setupSubviews() {
         super.setupSubviews()
-        layer.cornerRadius = 2
-        layer.masksToBounds = true
+        clipsToBounds = false
         backgroundColor = UIColor.clear
         layer.zPosition = 1
         setupTrimmerView()
@@ -124,7 +123,6 @@ public protocol TrimmerViewDelegate: AnyObject {
     private func setupHandleView() {
 
         leftHandleView.isUserInteractionEnabled = true
-        leftHandleView.layer.cornerRadius = 2.0
         leftHandleView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(leftHandleView)
 
@@ -136,13 +134,13 @@ public protocol TrimmerViewDelegate: AnyObject {
         leftHandleKnob.translatesAutoresizingMaskIntoConstraints = false
         leftHandleView.addSubview(leftHandleKnob)
 
-        leftHandleKnob.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
-        leftHandleKnob.widthAnchor.constraint(equalToConstant: 2).isActive = true
+        leftHandleKnob.image = UIImage(named: "btn_control-bar_edit_video_left")
+        leftHandleKnob.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+        leftHandleKnob.widthAnchor.constraint(equalToConstant: handleWidth).isActive = true
         leftHandleKnob.centerYAnchor.constraint(equalTo: leftHandleView.centerYAnchor).isActive = true
         leftHandleKnob.centerXAnchor.constraint(equalTo: leftHandleView.centerXAnchor).isActive = true
 
         rightHandleView.isUserInteractionEnabled = true
-        rightHandleView.layer.cornerRadius = 2.0
         rightHandleView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(rightHandleView)
 
@@ -154,8 +152,9 @@ public protocol TrimmerViewDelegate: AnyObject {
         rightHandleKnob.translatesAutoresizingMaskIntoConstraints = false
         rightHandleView.addSubview(rightHandleKnob)
 
-        rightHandleKnob.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
-        rightHandleKnob.widthAnchor.constraint(equalToConstant: 2).isActive = true
+        rightHandleKnob.image = UIImage(named: "btn_control-bar_edit_video_right")
+        rightHandleKnob.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+        rightHandleKnob.widthAnchor.constraint(equalToConstant: handleWidth).isActive = true
         rightHandleKnob.centerYAnchor.constraint(equalTo: rightHandleView.centerYAnchor).isActive = true
         rightHandleKnob.centerXAnchor.constraint(equalTo: rightHandleView.centerXAnchor).isActive = true
     }
@@ -186,20 +185,28 @@ public protocol TrimmerViewDelegate: AnyObject {
     }
 
     private func setupPositionBar() {
-
-        positionBar.frame = CGRect(x: 0, y: 0, width: 3, height: frame.height)
-        positionBar.backgroundColor = positionBarColor
+        let width: CGFloat = 6
+        positionBar.backgroundColor = .white
+        positionBar.frame = CGRect(x: 0, y: -2, width: width, height: frame.height+4)
         positionBar.center = CGPoint(x: leftHandleView.frame.maxX, y: center.y)
-        positionBar.layer.cornerRadius = 1
         positionBar.translatesAutoresizingMaskIntoConstraints = false
         positionBar.isUserInteractionEnabled = false
         addSubview(positionBar)
 
-        positionBar.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        positionBar.widthAnchor.constraint(equalToConstant: 3).isActive = true
-        positionBar.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+        let views = ["positionBar":positionBar]
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(-2)-[positionBar]-(-2)-|", options: [], metrics: nil, views:views))
+
+        positionBar.widthAnchor.constraint(equalToConstant: width).isActive = true
         positionConstraint = positionBar.leftAnchor.constraint(equalTo: leftHandleView.rightAnchor, constant: 0)
         positionConstraint?.isActive = true
+        
+        positionBar.layer.shadowOffset = CGSize(width: 2, height: 2)
+        positionBar.layer.shadowRadius = 4
+        positionBar.layer.shadowColor = UIColor.darkGray.cgColor
+        positionBar.layer.shadowOpacity = 0.3
+        positionBar.layer.cornerRadius = width / 2.0
+        positionBar.layer.masksToBounds = false
+
     }
 
     private func setupGestures() {

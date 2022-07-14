@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "btn_control-bar_video_progress.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
