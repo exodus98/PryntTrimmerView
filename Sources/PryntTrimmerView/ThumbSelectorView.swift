@@ -59,16 +59,17 @@ public class ThumbSelectorView: AVAssetTimeSelector {
     private func setupThumbView() {
 
         thumbView.translatesAutoresizingMaskIntoConstraints = false
-        thumbView.layer.borderWidth = 2.0
+        thumbView.layer.borderWidth = 4.0
         thumbView.layer.borderColor = thumbBorderColor.cgColor
         thumbView.isUserInteractionEnabled = true
         thumbView.contentMode = .scaleAspectFill
         thumbView.clipsToBounds = true
+        thumbView.layer.cornerRadius = 10
         addSubview(thumbView)
 
         leftThumbConstraint = thumbView.leftAnchor.constraint(equalTo: leftAnchor)
         leftThumbConstraint?.isActive = true
-        thumbView.widthAnchor.constraint(equalTo: thumbView.heightAnchor).isActive = true
+        thumbView.widthAnchor.constraint(equalTo: thumbView.heightAnchor, multiplier: 0.8).isActive = true
         thumbView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
         thumbView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
