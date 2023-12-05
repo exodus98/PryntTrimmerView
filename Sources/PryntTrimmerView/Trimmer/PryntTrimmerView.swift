@@ -106,7 +106,7 @@ public protocol TrimmerViewDelegate: AnyObject {
     }
 
     private func setupTrimmerView() {
-        trimView.layer.borderWidth = 2.0
+        trimView.layer.borderWidth = 5.0
         trimView.layer.cornerRadius = 10.0
         trimView.translatesAutoresizingMaskIntoConstraints = false
         trimView.isUserInteractionEnabled = false
@@ -164,7 +164,7 @@ public protocol TrimmerViewDelegate: AnyObject {
         leftMaskView.isUserInteractionEnabled = false
         leftMaskView.backgroundColor = UIColor.black
         leftMaskView.alpha = 0.3
-//        leftMaskView.layer.cornerRadius = 10.0
+        leftMaskView.layer.cornerRadius = 10.0
         leftMaskView.translatesAutoresizingMaskIntoConstraints = false
         insertSubview(leftMaskView, belowSubview: leftHandleView)
 
@@ -176,7 +176,7 @@ public protocol TrimmerViewDelegate: AnyObject {
         rightMaskView.isUserInteractionEnabled = false
         rightMaskView.backgroundColor = UIColor.black
         rightMaskView.alpha = 0.3
-//        rightMaskView.layer.cornerRadius = 10.0
+        rightMaskView.layer.cornerRadius = 10.0
         rightMaskView.translatesAutoresizingMaskIntoConstraints = false
         insertSubview(rightMaskView, belowSubview: rightHandleView)
 
